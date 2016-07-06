@@ -22,4 +22,6 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile 'io.reactivex:rxjava:1.1.6'
+    compile 'com.github.pengrad:java-telegram-bot-api:2.1.1'
+    compile 'com.squareup.okhttp3:okhttp:3.4.0-RC1'
 }
