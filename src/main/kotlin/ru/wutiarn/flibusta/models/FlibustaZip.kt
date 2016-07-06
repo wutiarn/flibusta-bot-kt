@@ -1,6 +1,5 @@
 package ru.wutiarn.flibusta.models
 
-import java.io.File
 import java.io.InputStream
 import java.nio.file.Path
 import java.util.zip.ZipEntry
