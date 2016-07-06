@@ -29,7 +29,7 @@ class FlibustaBot {
             for (update in bot.execute(GetUpdates().timeout(60).offset(lastUpdateId)).updates()) {
                 lastUpdateId = update.updateId() + 1
                 val message = update.message()
-                message?.let { processMessage(it) }
+                message?.text()?.let { processMessage(message) }
             }
         }
     }
