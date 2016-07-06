@@ -1,0 +1,8 @@
+version: "2"
+
+services:
+  transmission:
+    build: .
+    volumes:
+      - /mnt/media/fb2.Flibusta.Net:/code/data
+    restart: unless-stopped
