@@ -63,7 +63,8 @@ class FlibustaBot {
         chatRequestedBooksQueue.addAll(ids)
 
         format ?: let {
-            bot.sendText(chatId, "Requested: ${chatRequestedBooksQueue.joinToString(", ")}. Send me desired format (/epub , /mobi , /fb2 , /pdf) or /clear to clear queue")
+            bot.sendText(chatId, "Requested: ${chatRequestedBooksQueue.joinToString(", ")}. " +
+                    "Send me desired format (/epub , /mobi , /fb2 , /pdf) or /clear to clear queue")
             return
         }
 

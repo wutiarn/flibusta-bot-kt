@@ -24,7 +24,6 @@ class FlibustaStorage(baseDir: Path) {
         return Observable.just(1)
                 .observeOn(Schedulers.io())
                 .map {
-                    println("Start on ${Thread.currentThread().name}")
                     zips.first { it.contains(id) }
                             .getBookStream(id)
                             .readBytes()
@@ -37,9 +36,8 @@ class FlibustaStorage(baseDir: Path) {
         if (format == "fb2") return bookObservable
 
         return bookObservable
-                .observeOn(Schedulers.computation())
+                .observeOn(Schedulers.io())
                 .map {
-                    println("Convert on ${Thread.currentThread().name}")
                     val inTempFile = File.createTempFile(UUID.randomUUID().toString(), ".fb2")
                     val outTempFile = File.createTempFile(UUID.randomUUID().toString(), ".$format")
                     inTempFile.writeBytes(it)
