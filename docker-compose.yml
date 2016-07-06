@@ -1,7 +1,7 @@
 version: "2"
 
 services:
-  transmission:
+  flibusta:
     build: .
     volumes:
       - /mnt/media/fb2.Flibusta.Net:/code/data
