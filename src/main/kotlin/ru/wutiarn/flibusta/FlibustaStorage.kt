@@ -57,7 +57,7 @@ class FlibustaStorage(baseDir: Path) {
 
 class FlibustaZip(path: Path) {
     companion object {
-        private val zipRegex = ".*-(\\d+)-(\\d+).zip".toRegex()
+        private val zipRegex = ".*fb2-(\\d+)-(\\d+).zip".toRegex()
     }
 
     val range: IntRange
