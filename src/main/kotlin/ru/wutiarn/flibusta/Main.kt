@@ -1,5 +1,4 @@
-import ru.wutiarn.flibusta.FlibustaBot
-import ru.wutiarn.flibusta.log
+package ru.wutiarn.flibusta
 
 fun main(args: Array<String>) {
     val bot = FlibustaBot()

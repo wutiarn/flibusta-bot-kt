@@ -18,6 +18,8 @@ class FlibustaStorage(baseDir: Path) {
         zips = Files.newDirectoryStream(baseDir)
                 .map { FlibustaZip(it) }
                 .toList()
+
+        log("Loaded ${zips.count()} zips.")
     }
 
     private fun getBook(id: Int): Observable<ByteArray> {

@@ -14,9 +14,12 @@ plugins {
 }
 
 apply plugin: 'kotlin'
+apply plugin: 'application'
 
 group 'ru.wutiarn'
 version '1.0-SNAPSHOT'
+
+mainClassName="ru.wutiarn.flibusta.MainKt"
 
 shadowJar {
     baseName = 'flibusta-bot'
