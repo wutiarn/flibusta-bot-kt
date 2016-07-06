@@ -1,6 +1,3 @@
-group 'ru.wutiarn'
-version '1.0-SNAPSHOT'
-
 buildscript {
     ext.kotlin_version = '1.0.3'
 
@@ -12,7 +9,20 @@ buildscript {
     }
 }
 
+plugins {
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
 apply plugin: 'kotlin'
+
+group 'ru.wutiarn'
+version '1.0-SNAPSHOT'
+
+shadowJar {
+    baseName = 'flibusta-bot'
+    classifier = null
+    version = null
+}
 
 repositories {
     mavenCentral()

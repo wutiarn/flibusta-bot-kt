@@ -7,7 +7,7 @@ import com.pengrad.telegrambot.request.SendDocument
 import okhttp3.OkHttpClient
 import java.lang.ref.WeakReference
 import java.nio.file.Paths
-import java.util.concurrent.LinkedBlockingQueue
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class FlibustaBot {
@@ -20,7 +20,7 @@ class FlibustaBot {
             .build()
     val bot = TelegramBotAdapter.buildCustom("231792146:AAH36rnTv-1xMA-dz3dg2JsWE-o7P5coFa4", httpClient)
 
-    val requestedBooks = mutableMapOf<Long, WeakReference<LinkedBlockingQueue<Int>>>()
+    val requestedBooks = mutableMapOf<Long, WeakReference<HashSet<Int>>>()
 
 
     fun run() {
@@ -36,8 +36,12 @@ class FlibustaBot {
 
     fun processMessage(msg: Message) {
         val chatId = msg.chat().id()
+
+        val from = msg.from()
+        log("[${from.id()}] [Received] @${from.username()}: ${msg.text()}")
+
         val chatRequestedBooksQueue = requestedBooks[chatId]?.get() ?: let {
-            val queue = LinkedBlockingQueue<Int>(10)
+            val queue = HashSet<Int>(10)
             requestedBooks[chatId] = WeakReference(queue)
             queue
         }
@@ -58,7 +62,12 @@ class FlibustaBot {
                 .map { idRegex.find(it)!!.groups[1]!!.value }
                 .map { it.toInt() }
                 .toSet()
-                .filter { it !in chatRequestedBooksQueue }
+
+        if (ids.size + chatRequestedBooksQueue.size > 10) {
+            bot.sendText(chatId, "You can't add to queue more than 10 elements." +
+                    " You can clear queue with /clear command")
+            return
+        }
 
         chatRequestedBooksQueue.addAll(ids)
 
@@ -68,14 +77,16 @@ class FlibustaBot {
             return
         }
 
-        bot.sendText(chatId, "Okay, looking for ${chatRequestedBooksQueue.joinToString(", ")}")
+        bot.sendText(chatId, "Okay, ${chatRequestedBooksQueue.joinToString(", ")}. Give me a moment")
 
         chatRequestedBooksQueue.forEach { id ->
             flibustaStorage.getBook(id, format).subscribe({
                 bot.sendText(chatId, "$id: done. Sending.")
-                bot.execute(SendDocument(chatId, it).fileName("$id.$format"))
+                val filename = "$id.$format"
+                log("[${from.id()}] Sending $filename")
+                bot.execute(SendDocument(chatId, it).fileName(filename))
             }, {
-                bot.sendText(chatId, "$id: error. ${it.message}.")
+                bot.sendText(chatId, "$id: failed. Not found or an error occurred.")
             })
         }
 
