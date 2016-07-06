@@ -16,6 +16,7 @@ class FlibustaStorage(baseDir: Path) {
 
     init {
         zips = Files.newDirectoryStream(baseDir)
+                .filter { FlibustaZip.zipRegex.matches(it.fileName.toString()) }
                 .map { FlibustaZip(it) }
                 .toList()
 
@@ -57,7 +58,7 @@ class FlibustaStorage(baseDir: Path) {
 
 class FlibustaZip(path: Path) {
     companion object {
-        private val zipRegex = ".*fb2-(\\d+)-(\\d+).zip".toRegex()
+        val zipRegex = ".*fb2-(\\d+)-(\\d+).zip".toRegex()
     }
 
     val range: IntRange
@@ -65,7 +66,7 @@ class FlibustaZip(path: Path) {
 
     init {
         val regexResult = zipRegex.find(path.toString())
-        regexResult ?: throw IllegalArgumentException()
+        regexResult ?: throw IllegalArgumentException("$path is not supported")
         range = Integer.parseInt(regexResult.groups[1]!!.value)..Integer.parseInt(regexResult.groups[2]!!.value)
 
         zipFile = ZipFile(path.toFile())
