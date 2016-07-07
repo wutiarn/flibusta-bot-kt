@@ -55,7 +55,7 @@ class FlibustaBot {
 
         if (text.startsWith("/")) text = text.slice(1..text.lastIndex)
 
-        val entries = text.split(" ")
+        val entries = text.split("[ \n]".toRegex())
         val format = entries.firstOrNull() { it in supportedFormats }
 
         val ids = entries.filter { idRegex.matches(it) }
