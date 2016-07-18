@@ -16,7 +16,7 @@ Also you have to install Docker and Docker Compose on target machine because it 
 
 | Variable            | Description                                                                         |
 | ------------------- | ----------------------------------------------------------------------------------- |
-| TELEGRAM_TOKEN      | Token, got from @BotFather bot (i.e. `258003162:AAFTKcGoZdgGrHJnArtCZtqaiQ8SiI6VPxw`) |
+| TELEGRAM_TOKEN      | Token, got from @BotFather bot (e.g. `258003162:AAFTKcGoZdgGrHJnArtCZtqaiQ8SiI6VPxw`) |
 
 ## Volume paths
 
