@@ -2,9 +2,9 @@ version: "2"
 
 services:
   flibusta:
-    build: .
+    image: registry.gitlab.com/wutiarn/flibusta-bot
     volumes:
-      - /mnt/media/fb2.Flibusta.Net:/code/data
+      - /path/to/flibusta/archive:/code/data
     environment:
       TELEGRAM_TOKEN: telegram_token
     restart: unless-stopped
