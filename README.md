@@ -1,4 +1,4 @@
-# Telegram bot that finds books in flibusta fb2 archives
+# Telegram bot that finds books in Flibusta fb2 archives
 Since you are here you probably know that [flibusta](http://flibusta.is/) (big russian e-library) web ui [doesn't allow to download](http://flibusta.is/b/230948/fb2) a lot of books (due to copyright issues) as well as that all of them are available on Tor/I2P mirrors. One day I've got tired of that nonsense and written this bot, which gets book id / flibusta url and sends it to you in selected format (fb2, epub, mobi, pdf).
 
 There is a [publicly available version](https://telegram.me/wubusta_bot) of this bot hosted on my home server. You can use it as long as it's not getting detrimental for me.
