@@ -10,15 +10,15 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class FlibustaBot {
+class FlibustaBot(telegramToken: String, libPath: String) {
     val supportedFormats = listOf("mobi", "epub", "pdf", "fb2")
     val idRegex = ".*?(\\d{4,7}).*".toRegex()
 
-    val flibustaStorage = FlibustaStorage(Paths.get("data"))
+    val flibustaStorage = FlibustaStorage(Paths.get(libPath))
     val httpClient = OkHttpClient().newBuilder()
             .readTimeout(65, TimeUnit.SECONDS)
             .build()
-    val bot = TelegramBotAdapter.buildCustom("231792146:AAH36rnTv-1xMA-dz3dg2JsWE-o7P5coFa4", httpClient)
+    val bot = TelegramBotAdapter.buildCustom(telegramToken, httpClient)
 
     val requestedBooks = mutableMapOf<Long, WeakReference<HashSet<Int>>>()
 

@@ -5,4 +5,6 @@ services:
     build: .
     volumes:
       - /mnt/media/fb2.Flibusta.Net:/code/data
+    environment:
+      TELEGRAM_TOKEN: telegram_token
     restart: unless-stopped
