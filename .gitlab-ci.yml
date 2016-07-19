@@ -1,5 +1,6 @@
 build_image:
   image: docker:git
+  stage: build
   services:
     - docker:dind
   script:
@@ -8,3 +9,9 @@ build_image:
     - docker push registry.gitlab.com/wutiarn/flibusta-bot:latest
   only:
     - master
+
+deploy:
+  image: alpine
+  stage: deploy
+  script:
+    - wget $DEPLOY_TRIGGER_URL -T 1800 -O -
