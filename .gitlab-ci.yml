@@ -13,4 +13,4 @@ build_image:
 deploy:
   stage: deploy
   script:
-    - curl -X POST -F token=$EDUSTOR_DEPLOY_TRIGGER_TOKEN -F ref=edustor https://gitlab.com/api/v3/projects/1237981/trigger/build
+    - curl -X POST -F token=$EDUSTOR_DEPLOY_TRIGGER_TOKEN -F ref=master https://gitlab.com/api/v3/projects/1237981/trigger/build
