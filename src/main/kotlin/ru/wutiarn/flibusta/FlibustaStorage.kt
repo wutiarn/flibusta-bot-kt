@@ -23,6 +23,10 @@ class FlibustaStorage(baseDir: Path) {
         log("Loaded ${zips.count()} zips.")
     }
 
+    fun zipCount(): Int {
+        return zips.count()
+    }
+
     private fun getBook(id: Int): Observable<ByteArray> {
         return Observable.just(1)
                 .observeOn(Schedulers.io())

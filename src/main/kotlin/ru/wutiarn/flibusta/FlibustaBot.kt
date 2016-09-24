@@ -2,6 +2,7 @@ package ru.wutiarn.flibusta
 
 import com.pengrad.telegrambot.TelegramBotAdapter
 import com.pengrad.telegrambot.model.Message
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup
 import com.pengrad.telegrambot.request.GetUpdates
 import com.pengrad.telegrambot.request.SendDocument
 import okhttp3.OkHttpClient
@@ -10,11 +11,11 @@ import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class FlibustaBot(telegramToken: String, libPath: String) {
+class FlibustaBot(telegramToken: String, val libPath: String) {
     val supportedFormats = listOf("mobi", "epub", "pdf", "fb2")
     val idRegex = ".*?(\\d{4,7}).*".toRegex()
 
-    val flibustaStorage = FlibustaStorage(Paths.get(libPath))
+    var flibustaStorage: FlibustaStorage = initStorage()
     val httpClient = OkHttpClient().newBuilder()
             .readTimeout(65, TimeUnit.SECONDS)
             .build()
@@ -26,12 +27,17 @@ class FlibustaBot(telegramToken: String, libPath: String) {
     fun run() {
         var lastUpdateId = 0
         while (true) {
-            for (update in bot.execute(GetUpdates().timeout(60).offset(lastUpdateId)).updates()) {
+            val updates = bot.execute(GetUpdates().timeout(60).offset(lastUpdateId)).updates() ?: continue
+            for (update in updates) {
                 lastUpdateId = update.updateId() + 1
                 val message = update.message()
                 message?.text()?.let { processMessage(message) }
             }
         }
+    }
+
+    fun initStorage(): FlibustaStorage {
+        return FlibustaStorage(Paths.get(libPath))
     }
 
     fun processMessage(msg: Message) {
@@ -47,13 +53,25 @@ class FlibustaBot(telegramToken: String, libPath: String) {
         }
 
         var text = msg.text()
-        if (text == "/clear") {
+
+        if (text.startsWith("/")) text = text.slice(1..text.lastIndex)
+
+        if (text == "clear") {
             requestedBooks.clear()
             bot.sendText(chatId, "Queue cleared")
             return
         }
 
-        if (text.startsWith("/")) text = text.slice(1..text.lastIndex)
+        if (text == "update") {
+            if (chatId != 43457173L) {
+                bot.sendText(chatId, "You don't have access to this feature")
+            } else {
+                bot.sendText(chatId, "Scan initiated. Old zips count: ${flibustaStorage.zipCount()}")
+                flibustaStorage = initStorage()
+                bot.sendText(chatId, "Scan finished. New zips count: ${flibustaStorage.zipCount()}")
+            }
+            return
+        }
 
         val entries = text.split("[ \n]".toRegex())
         val format = entries.firstOrNull() { it in supportedFormats }
@@ -72,8 +90,11 @@ class FlibustaBot(telegramToken: String, libPath: String) {
         chatRequestedBooksQueue.addAll(ids)
 
         format ?: let {
+
+            val replyMarkup = ReplyKeyboardMarkup(arrayOf("epub", "mobi", "fb2", "pdf", "clear"))
+
             bot.sendText(chatId, "Requested: ${chatRequestedBooksQueue.joinToString(", ")}. " +
-                    "Send me desired format (/epub , /mobi , /fb2 , /pdf) or /clear to clear queue")
+                    "Select desired format or clear to cancel", replyMarkup)
             return
         }
 
