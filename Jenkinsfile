@@ -23,12 +23,12 @@ node {
         }
     }
 
-    stage("Artifacts") {
-        image.inside {
-            archiveArtifacts "flibusta-bot.jar"
-            fingerprint "flibusta-bot.jar"
-        }
-    }
+//    stage("Artifacts") {
+//        image.inside {
+//            archiveArtifacts "flibusta-bot.jar"
+//            fingerprint "flibusta-bot.jar"
+//        }
+//    }
 
     stage("Deploy") {
         docker.image("wutiarn/rancher-deployer").inside {
