@@ -25,13 +25,13 @@ node {
         }
     }
 
-    stage("Push") {
-        docker.withRegistry(REGISTRY_URL, REGISTRY_CREDENTIALS) {
-            image.push("latest")
-        }
-    }
-
     if (env.BRANCH_NAME == "master") {
+        stage("Push") {
+            docker.withRegistry(REGISTRY_URL, REGISTRY_CREDENTIALS) {
+                image.push("latest")
+            }
+        }
+
         stage("Deploy") {
             docker.image("wutiarn/rancher-deployer").inside {
                 withCredentials([[$class          : 'UsernamePasswordMultiBinding', credentialsId: RANCHER_API_CREDENTIALS,
