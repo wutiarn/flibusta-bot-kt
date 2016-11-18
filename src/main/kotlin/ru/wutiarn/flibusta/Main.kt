@@ -2,8 +2,9 @@ package ru.wutiarn.flibusta
 
 fun main(args: Array<String>) {
     val telegramToken = getEnv("TELEGRAM_TOKEN")
-    val libPath = "/code/data"
-    val bot = FlibustaBot(telegramToken, libPath)
+    val asrToken = getEnv("ASR_TOKEN")
+    val libPath = "data"
+    val bot = FlibustaBot(telegramToken, asrToken, libPath)
     log("Started")
     bot.run()
 }

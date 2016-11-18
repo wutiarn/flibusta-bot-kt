@@ -6,12 +6,14 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup
 import com.pengrad.telegrambot.request.GetUpdates
 import com.pengrad.telegrambot.request.SendDocument
 import okhttp3.OkHttpClient
+import ru.wutiarn.flibusta.handlers.VoiceHandler
 import java.lang.ref.WeakReference
 import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class FlibustaBot(telegramToken: String, val libPath: String) {
+class FlibustaBot(telegramToken: String, asrToken: String, val libPath: String) {
+
     val supportedFormats = listOf("mobi", "epub", "pdf", "fb2")
     val idRegex = ".*?(\\d{4,7}).*".toRegex()
 
@@ -21,17 +23,20 @@ class FlibustaBot(telegramToken: String, val libPath: String) {
             .build()
     val bot = TelegramBotAdapter.buildCustom(telegramToken, httpClient)
 
+    val voiceHandler = VoiceHandler(asrToken, bot, httpClient)
+
     val requestedBooks = mutableMapOf<Long, WeakReference<HashSet<Int>>>()
 
 
     fun run() {
-        var lastUpdateId = 0
+        var lastUpdateId = 500
         while (true) {
             val updates = bot.execute(GetUpdates().timeout(60).offset(lastUpdateId)).updates() ?: continue
             for (update in updates) {
                 lastUpdateId = update.updateId() + 1
                 val message = update.message()
                 message?.text()?.let { processMessage(message) }
+                message?.voice()?.let { voiceHandler.processVoiceMessage(message) }
             }
         }
     }
