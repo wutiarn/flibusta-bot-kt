@@ -6,12 +6,12 @@ dependencies:
     - "~/docker"
   post:
     - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
-    -
-    - if [[ "$(docker images -q ci-base 2> /dev/null)" == "" ]]; then
-        docker build --rm=false -t ci-base -f ci-base/Dockerfile.base ci-base/
-      else
-        docker history ci-base
-      fi
+    - >
+        if [[ "$(docker images -q ci-base 2> /dev/null)" == "" ]]; then
+          docker build --rm=false -t ci-base -f ci-base/Dockerfile.base ci-base/;
+        else
+          docker history ci-base;
+        fi
     - mkdir -p ~/docker; docker save ci-base > ~/docker/image.tar
 test:
   post:
