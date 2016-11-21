@@ -1,4 +1,12 @@
+machine:
+  services:
+    - docker
 test:
   post:
     - ./gradlew shadowJar
     - mv build/libs/flibusta-bot.jar $CIRCLE_ARTIFACTS
+deployment:
+  production:
+    branch: master
+    commands:
+      - docker build -t homeserver/flibusta -f Dockerfile.ci .
