@@ -7,7 +7,7 @@ BASE_IMAGE_NAME="ci-base"
 
 echo "Dockerfile hash is $VERSION_TAG"
 
-CACHE_DIR="~/docker"
+CACHE_DIR="$HOME/docker"
 IMG_TAR_PATH="$CACHE_DIR/$VERSION_TAG.tar"
 
 if [[ -e "$IMG_TAR_PATH" ]]; then
