@@ -22,4 +22,6 @@ else
     docker save "$BASE_IMAGE_NAME" > "$IMG_TAR_PATH"
 fi
 
+docker history "$BASE_IMAGE_NAME"
+
 echo "DONE"
