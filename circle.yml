@@ -6,6 +6,7 @@ dependencies:
     - "~/docker"
   post:
     - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
+    - docker history ci-base
     - docker build --rm=false -t ci-base -f Dockerfile.base .
     - mkdir -p ~/docker; docker save ci-base > ~/docker/image.tar
 test:
