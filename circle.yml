@@ -16,4 +16,4 @@ deployment:
   production:
     branch: master
     commands:
-      - docker build -t --rm=false homeserver/flibusta -f Dockerfile.ci .
+      - docker build --rm=false -t homeserver/flibusta -f Dockerfile.ci .
