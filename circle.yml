@@ -5,12 +5,7 @@ dependencies:
   cache_directories:
     - "~/docker"
   post:
-    - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
-    - ./ci-base/fix-timestemp.sh
-    - ls -lah
-    - docker pull ubuntu:16.04
-    - docker build --rm=false -t ci-base -f ci-base/Dockerfile.base ci-base/;
-    - mkdir -p ~/docker; docker save ci-base > ~/docker/image.tar
+    - ./ci-base/build-base.sh
 test:
   post:
     - ./gradlew shadowJar
