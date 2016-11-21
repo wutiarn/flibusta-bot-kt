@@ -7,7 +7,7 @@ dependencies:
   cache_directories:
     - "~/docker"
   post:
-    - ./ci-base/build-base.sh
+    - ./ci-base/ci-base.sh
 test:
   post:
     - ./gradlew shadowJar
@@ -16,5 +16,6 @@ deployment:
   production:
     branch: master
     commands:
+      - ci-base/update_ci_dockerfile_from.sh Dockerfile.ci
       - docker build --rm=false -t wutiarn/hs-flibusta -f Dockerfile.ci .
       - docker push wutiarn/hs-flibusta

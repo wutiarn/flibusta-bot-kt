@@ -3,8 +3,9 @@
 cd "$(dirname "$0")"
 
 VERSION_TAG="$(sha1sum Dockerfile.base | sha1sum | cut -d' ' -f1)"
-BASE_IMAGE_NAME="ci-base"
-HUB_IMAGE_NAME="wutiarn/ci-base-cache:$VERSION_TAG"
+IMAGE_ID="wutiarn/ci-base-cache:$VERSION_TAG"
+
+echo -n "$VERSION_TAG" > VERSION_TAG.txt
 
 echo "Dockerfile hash is $VERSION_TAG"
 
@@ -18,16 +19,15 @@ else
     echo "No cache image found. Building new one..."
     rm -rf "$CACHE_DIR"
     mkdir -p "$CACHE_DIR"
-    docker build -t "$BASE_IMAGE_NAME" -f Dockerfile.base .
+    docker build -t "$IMAGE_ID" -f Dockerfile.base .
 
-    echo "Pushing as $HUB_IMAGE_NAME..."
-    docker tag "$BASE_IMAGE_NAME" "$HUB_IMAGE_NAME"
-    docker push "$HUB_IMAGE_NAME"
+    echo "Pushing as $IMAGE_ID..."
+    docker push "$IMAGE_ID"
 
-    echo "Saving built image ($BASE_IMAGE_NAME) to $IMG_TAR_PATH..."
-    docker save "$BASE_IMAGE_NAME" > "$IMG_TAR_PATH"
+    echo "Saving built image ($IMAGE_ID) to $IMG_TAR_PATH..."
+    docker save "$IMAGE_ID" > "$IMG_TAR_PATH"
 fi
 
-docker history "$BASE_IMAGE_NAME"
+docker history "$IMAGE_ID"
 
 echo "DONE"
