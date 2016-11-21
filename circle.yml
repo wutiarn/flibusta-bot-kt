@@ -1,6 +1,13 @@
 machine:
   services:
     - docker
+dependencies:
+  cache_directories:
+    - "~/docker"
+  post:
+    - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
+    - docker build --rm=false -t ci-base -f Dockerfile.base .
+    - mkdir -p ~/docker; docker save ci-base > ~/docker/image.tar
 test:
   post:
     - ./gradlew shadowJar
@@ -9,4 +16,4 @@ deployment:
   production:
     branch: master
     commands:
-      - docker build -t homeserver/flibusta -f Dockerfile.ci .
+      - docker build -t --rm=false homeserver/flibusta -f Dockerfile.ci .
