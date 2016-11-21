@@ -3,7 +3,7 @@
 cd "$(dirname "$0")"
 
 VERSION_TAG="$(sha1sum Dockerfile.base | sha1sum | cut -d' ' -f1)"
-BASE_IMAGE_NAME="wutiarn/ci-base"
+BASE_IMAGE_NAME="ci-base"
 
 echo "Dockerfile hash is $VERSION_TAG"
 
@@ -18,7 +18,7 @@ else
     rm -rf "$CACHE_DIR"
     mkdir -p "$CACHE_DIR"
     docker build -t "$BASE_IMAGE_NAME" -f Dockerfile.base .
-    echo "Saving built image..."
+    echo "Saving built image ($BASE_IMAGE_NAME) to $IMG_TAR_PATH..."
     docker save "$BASE_IMAGE_NAME" > "$IMG_TAR_PATH"
 fi
 
