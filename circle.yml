@@ -18,5 +18,5 @@ deployment:
     branch: master
     commands:
       - docker build --rm=false -t wutiarn/hs-flibusta -f Dockerfile.ci .
-      - docker login -u wutiarn -p $DOCKER_HUB_PASSWORD
+      - docker login -u wutiarn -e me@wutiarn.ru -p $DOCKER_HUB_PASSWORD
       - docker push wutiarn/hs-flibusta
