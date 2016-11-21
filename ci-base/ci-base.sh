@@ -9,23 +9,16 @@ echo -n "$VERSION_TAG" > VERSION_TAG.txt
 
 echo "Dockerfile hash is $VERSION_TAG"
 
-CACHE_DIR="$HOME/docker"
-IMG_TAR_PATH="$CACHE_DIR/$VERSION_TAG.tar"
-
-if [[ -e "$IMG_TAR_PATH" ]]; then
-    echo "Found cached image. Restoring..."
-#    docker load -i "$IMG_TAR_PATH"
-    echo "Pulling from hub"
-    docker pull "$IMAGE_ID" | cat
+echo "Pulling $IMAGE_ID..."
+if docker pull "$IMAGE_ID"; then
+    echo "Pull completed"
 else
-    echo "No cache image found. Building new one..."
-    rm -rf "$CACHE_DIR"
-    mkdir -p "$CACHE_DIR"
+    echo "No cache image found. Building new one...";
     docker build -t "$IMAGE_ID" -f Dockerfile.base .
 
-    echo "Saving built image ($IMAGE_ID) to $IMG_TAR_PATH..."
-    docker save "$IMAGE_ID" > "$IMG_TAR_PATH"
-fi
+    echo "Pushing as $IMAGE_ID..."
+    docker push "$IMAGE_ID" | cat
+fi;
 
 echo "History:"
 docker history "$IMAGE_ID"
