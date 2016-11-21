@@ -1,0 +1,4 @@
+test:
+  post:
+    - ./gradlew shadowJar
+    - mv build/libs/flibusta-bot.jar $CIRCLE_ARTIFACTS
