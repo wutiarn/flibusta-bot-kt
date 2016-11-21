@@ -20,4 +20,4 @@ deployment:
     commands:
       - ci-base/update_ci_dockerfile_from.sh Dockerfile.ci
       - docker build --rm=false -t wutiarn/hs-flibusta -f Dockerfile.ci .
-      - docker push wutiarn/hs-flibusta
+      - docker push wutiarn/hs-flibusta | cat

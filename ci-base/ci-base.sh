@@ -22,7 +22,7 @@ else
     docker build -t "$IMAGE_ID" -f Dockerfile.base .
 
     echo "Pushing as $IMAGE_ID..."
-    docker push "$IMAGE_ID"
+    docker push "$IMAGE_ID" | cat
 
     echo "Saving built image ($IMAGE_ID) to $IMG_TAR_PATH..."
     docker save "$IMAGE_ID" > "$IMG_TAR_PATH"
