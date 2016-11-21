@@ -10,9 +10,9 @@ echo "Dockerfile hash is $VERSION_TAG"
 CACHE_DIR="~/docker"
 IMG_TAR_PATH="$CACHE_DIR/$VERSION_TAG.tar"
 
-if [[ -e "$IMG_TAR_PATH" ]];
+if [[ -e "$IMG_TAR_PATH" ]]; then
     echo "Found cached image. Restoring..."
-    then docker load -i "$IMG_TAR_PATH"
+    docker load -i "$IMG_TAR_PATH"
 else
     echo "No cache image found. Building new one..."
     rm -rf "$CACHE_DIR"
