@@ -10,7 +10,7 @@ echo -n "$VERSION_TAG" > VERSION_TAG.txt
 echo "Dockerfile hash is $VERSION_TAG"
 
 echo "Pulling $IMAGE_ID..."
-if docker pull "$IMAGE_ID"; then
+if docker pull "$IMAGE_ID" | cat; [[ ${PIPESTATUS[0]} == 0 ]]; then
     echo "Pull completed"
 else
     echo "No cache image found. Building new one...";
@@ -20,10 +20,6 @@ else
     docker push "$IMAGE_ID" | cat
 fi;
 
-echo "History:"
 docker history "$IMAGE_ID"
-
-echo "Pushing as $IMAGE_ID..."
-docker push "$IMAGE_ID" | cat
 
 echo "DONE"
