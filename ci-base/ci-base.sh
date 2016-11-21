@@ -15,6 +15,8 @@ IMG_TAR_PATH="$CACHE_DIR/$VERSION_TAG.tar"
 if [[ -e "$IMG_TAR_PATH" ]]; then
     echo "Found cached image. Restoring..."
     docker load -i "$IMG_TAR_PATH"
+    echo "Pulling from hub"
+    docker pull "$IMAGE_ID" | cat
 else
     echo "No cache image found. Building new one..."
     rm -rf "$CACHE_DIR"
