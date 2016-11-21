@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+BASEDIR=$(pwd)
+
 cd "$(dirname "$0")"
 
 VERSION_TAG="$(sha1sum Dockerfile.base | sha1sum | cut -d' ' -f1)"
@@ -21,5 +23,10 @@ else
 fi;
 
 docker history "$IMAGE_ID"
+
+sed -i "s/\#CI_BASE_IMAGE_HERE/$IMAGE_ID/" "$BASEDIR/$1"
+
+echo "CI Dockerfile content:"
+cat "$BASEDIR/$1"
 
 echo "DONE"

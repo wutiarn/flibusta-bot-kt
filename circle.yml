@@ -13,8 +13,7 @@ deployment:
   production:
     branch: master
     commands:
-      - ./ci-base/ci-base.sh
-      - ci-base/update_ci_dockerfile_from.sh Dockerfile.ci
+      - ./ci-base/ci-base.sh Dockerfile.ci
       - docker build --rm=false -t wutiarn/hs-flibusta -f Dockerfile.ci .
       - docker history wutiarn/hs-flibusta
       - docker push wutiarn/hs-flibusta:latest | cat
