@@ -1,5 +1,7 @@
 #!/bin/bash -ve
 
+cd "$(dirname "$0")"
+
 VERSION_TAG="$(sha1sum Dockerfile.base | sha1sum | cut -d' ' -f1)"
 BASE_IMAGE_NAME="wutiarn/ci-base:$VERSION_TAG"
 
