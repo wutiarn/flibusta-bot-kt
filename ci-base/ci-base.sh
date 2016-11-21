@@ -25,7 +25,7 @@ fi;
 docker history "$IMAGE_ID"
 
 
-ESCAPED_IMAGE_ID=$("$IMAGE_ID" | sed -e 's/[\/&]/\\&/g')
+ESCAPED_IMAGE_ID=$(echo -n "$IMAGE_ID" | sed -e 's/[\/&]/\\&/g')
 sed -i "s/\#CI_BASE_IMAGE_HERE/$ESCAPED_IMAGE_ID/" "$BASEDIR/$1"
 
 echo "CI Dockerfile content:"
