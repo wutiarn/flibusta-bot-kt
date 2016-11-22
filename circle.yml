@@ -9,13 +9,14 @@ test:
   post:
     - ./gradlew shadowJar
     - cp build/libs/flibusta-bot.jar "$CIRCLE_ARTIFACTS"
+    - sha1sum "$CIRCLE_ARTIFACTS/*" > "$CIRCLE_ARTIFACTS/sha1sum"
+    - cat "$CIRCLE_ARTIFACTS/sha1sum"
 deployment:
   github:
     tag: /*/
     owner: wutiarn
     commands:
       - ls -la "$CIRCLE_ARTIFACTS"
-      - sha1sum "$CIRCLE_ARTIFACTS/*"
       - docker run
         -e "GITHUB_TOKEN=$GITHUB_TOKEN"
         wutiarn/ghr "$CIRCLE_TAG" "$CIRCLE_ARTIFACTS"
