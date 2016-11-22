@@ -17,9 +17,11 @@ deployment:
     owner: wutiarn
     commands:
       - ls -la $CIRCLE_ARTIFACTS
-      - docker run
-        -e GITHUB_TOKEN=$GITHUB_TOKEN
-        wutiarn/ghr $CIRCLE_TAG $CIRCLE_ARTIFACTS
+      - docker run wutiarn/ghr
+        -t $GITHUB_TOKEN
+        -u wutiarn
+        -r flibusta-bot
+        $CIRCLE_TAG $CIRCLE_ARTIFACTS
   production:
     branch: master
     commands:
