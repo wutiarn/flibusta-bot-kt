@@ -9,8 +9,8 @@ test:
   post:
     - ./gradlew shadowJar
     - cp build/libs/flibusta-bot.jar $CIRCLE_ARTIFACTS
-    - (cd $CIRCLE_ARTIFACTS && sha1sum * > sha1sum)
-    - cat $CIRCLE_ARTIFACTS/sha1sum
+    - (cd $CIRCLE_ARTIFACTS && sha1sum * > sha1sum.txt)
+    - cat $CIRCLE_ARTIFACTS/sha1sum.txt
 deployment:
   github:
     tag: /*/
