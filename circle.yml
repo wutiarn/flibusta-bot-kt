@@ -13,7 +13,7 @@ test:
     - cat $CIRCLE_ARTIFACTS/sha1sum.txt
 deployment:
   github:
-    tag: /*/
+    tag: /.*/
     owner: wutiarn
     commands:
       - ls -la $CIRCLE_ARTIFACTS
