@@ -17,11 +17,13 @@ deployment:
     owner: wutiarn
     commands:
       - ls -la $CIRCLE_ARTIFACTS
-      - docker run wutiarn/ghr
+      - docker run
+        -v $CIRCLE_ARTIFACTS:/artifacts
+        wutiarn/ghr
         ghr -t $GITHUB_TOKEN
         -u wutiarn
         -r flibusta-bot
-        $CIRCLE_TAG $CIRCLE_ARTIFACTS/
+        $CIRCLE_TAG /artifacts
   production:
     branch: master
     commands:
