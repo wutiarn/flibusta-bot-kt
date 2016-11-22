@@ -8,8 +8,17 @@ machine:
 test:
   post:
     - ./gradlew shadowJar
-    - cp build/libs/flibusta-bot.jar $CIRCLE_ARTIFACTS
+    - cp build/libs/flibusta-bot.jar "$CIRCLE_ARTIFACTS"
 deployment:
+  github:
+    tag: /*/
+    owner: wutiarn
+    commands:
+      - ls -la "$CIRCLE_ARTIFACTS"
+      - sha1sum "$CIRCLE_ARTIFACTS/*"
+      - docker run
+        -e "GITHUB_TOKEN=$GITHUB_TOKEN"
+        wutiarn/ghr "$CIRCLE_TAG" "$CIRCLE_ARTIFACTS"
   production:
     branch: master
     commands:
@@ -26,4 +35,4 @@ deployment:
         -e "RANCHER_SECRET_KEY=$RANCHER_SECRET_KEY"
         wutiarn/rancher-deployer
 # REQUIRED ENVIRONMENTS
-# DOCKER_HUB_PASSWORD RANCHER_STACK_ID RANCHER_ACCESS_KEY RANCHER_SECRET_KEY
+# DOCKER_HUB_PASSWORD RANCHER_STACK_ID RANCHER_ACCESS_KEY RANCHER_SECRET_KEY GITHUB_TOKEN
