@@ -21,7 +21,7 @@ deployment:
         ghr -t $GITHUB_TOKEN
         -u wutiarn
         -r flibusta-bot
-        $CIRCLE_TAG $CIRCLE_ARTIFACTS
+        $CIRCLE_TAG $CIRCLE_ARTIFACTS/
   production:
     branch: master
     commands:
