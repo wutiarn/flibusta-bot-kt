@@ -8,18 +8,18 @@ machine:
 test:
   post:
     - ./gradlew shadowJar
-    - cp build/libs/flibusta-bot.jar "$CIRCLE_ARTIFACTS"
-    - sha1sum "$CIRCLE_ARTIFACTS/*" > "$CIRCLE_ARTIFACTS/sha1sum"
-    - cat "$CIRCLE_ARTIFACTS/sha1sum"
+    - cp build/libs/flibusta-bot.jar $CIRCLE_ARTIFACTS
+    - (cd $CIRCLE_ARTIFACTS && sha1sum * > sha1sum)
+    - cat $CIRCLE_ARTIFACTS/sha1sum
 deployment:
   github:
     tag: /*/
     owner: wutiarn
     commands:
-      - ls -la "$CIRCLE_ARTIFACTS"
+      - ls -la $CIRCLE_ARTIFACTS
       - docker run
-        -e "GITHUB_TOKEN=$GITHUB_TOKEN"
-        wutiarn/ghr "$CIRCLE_TAG" "$CIRCLE_ARTIFACTS"
+        -e GITHUB_TOKEN=$GITHUB_TOKEN
+        wutiarn/ghr $CIRCLE_TAG $CIRCLE_ARTIFACTS
   production:
     branch: master
     commands:
