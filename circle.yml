@@ -18,7 +18,7 @@ deployment:
     commands:
       - ls -la $CIRCLE_ARTIFACTS
       - docker run wutiarn/ghr
-        -t $GITHUB_TOKEN
+        ghr -t $GITHUB_TOKEN
         -u wutiarn
         -r flibusta-bot
         $CIRCLE_TAG $CIRCLE_ARTIFACTS
