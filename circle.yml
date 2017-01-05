@@ -1,14 +1,30 @@
 machine:
+  environment:
+    TERM: dumb
   pre:
     - curl -sSL https://s3.amazonaws.com/circle-downloads/install-circleci-docker.sh | bash -s -- 1.10.0
   services:
     - docker
+dependencies:
+  override:
+    - ./gradlew resolveConfigurations
   post:
-    - docker login -u wutiarn -e me@wutiarn.ru -p $DOCKER_HUB_PASSWORD
+    - docker login -u wutiarn+circleci -e me@wutiarn.ru -p $QUAY_PASSWORD quay.io
+    - ./ci-base/ci-base.sh Dockerfile.ci
 test:
+  override:
+    - docker run wutiarn/ci-base-cache:test echo "$HOME"
+    - docker run
+      -w $PWD -v $PWD:$PWD
+      -v $HOME/.gradle/:/root/.gradle/
+      -e GRADLE_USER_HOME=/root/.gradle
+      wutiarn/ci-base-cache:test ./gradlew test
+    - sudo chown -R $UID $HOME/.gradle .
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
   post:
     - ./gradlew shadowJar
-    - cp build/libs/flibusta-bot.jar $CIRCLE_ARTIFACTS
+    - cp build/dist/*.jar $CIRCLE_ARTIFACTS
     - (cd $CIRCLE_ARTIFACTS && sha1sum * > sha1sum.txt)
     - cat $CIRCLE_ARTIFACTS/sha1sum.txt
 deployment:
@@ -27,17 +43,19 @@ deployment:
   production:
     branch: master
     commands:
-      - ./ci-base/ci-base.sh Dockerfile.ci
-      - docker build --rm=false -t wutiarn/hs-flibusta -f Dockerfile.ci .
-      - docker history wutiarn/hs-flibusta
-      - docker push wutiarn/hs-flibusta:latest | cat
+      - docker build --rm=false -t result -f Dockerfile.ci .
+      - docker history result
+      - docker tag result quay.io/wutiarn/flibusta-bot:ci-$CIRCLE_BUILD_NUM
+      - docker tag result quay.io/wutiarn/flibusta-bot:latest
+      - docker push quay.io/wutiarn/flibusta-bot:ci-$CIRCLE_BUILD_NUM | cat
+      - docker push quay.io/wutiarn/flibusta-bot:latest | cat
       - docker run
-        -e "RANCHER_URL=https://rancher.wutiarn.ru/v1/projects/1a5"
-        -e "RANCHER_STACK_NAME=homeserver"
-        -e "RANCHER_SERVICE_NAME=flibusta-bot"
-        -e "RANCHER_STACK_ID=$RANCHER_STACK_ID"
-        -e "RANCHER_ACCESS_KEY=$RANCHER_ACCESS_KEY"
-        -e "RANCHER_SECRET_KEY=$RANCHER_SECRET_KEY"
-        wutiarn/rancher-deployer
+        -e DOCKER_HOST=swarm.wutiarn.ru:2376
+        -e DOCKER_TLS_VERIFY=1
+        -e CA_URL=https://wutiarn.keybase.pub/swarm/ca.pem
+        -e CERT_URL=https://wutiarn.keybase.pub/swarm/cert.pem
+        -e KEY="$DOCKER_KEY"
+        quay.io/wutiarn/docker-deployer
+        docker service update --image quay.io/wutiarn/flibusta-bot:ci-$CIRCLE_BUILD_NUM hsd_flibusta-bot
 # REQUIRED ENVIRONMENTS
-# DOCKER_HUB_PASSWORD RANCHER_STACK_ID RANCHER_ACCESS_KEY RANCHER_SECRET_KEY GITHUB_TOKEN
+# QUAY_PASSWORD DOCKER_KEY GITHUB_TOKEN

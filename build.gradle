@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.0.3'
+    ext.kotlin_version = '1.0.6'
 
     repositories {
         mavenCentral()
@@ -11,6 +11,7 @@ buildscript {
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '1.2.3'
+    id "com.palantir.configuration-resolver" version "0.1.0"
 }
 
 apply plugin: 'kotlin'
@@ -23,6 +24,7 @@ mainClassName="ru.wutiarn.flibusta.MainKt"
 
 shadowJar {
     baseName = 'flibusta-bot'
+    destinationDir = new File(buildDir, "dist")
     classifier = null
     version = null
 }

@@ -2,6 +2,6 @@ FROM #CI_BASE_IMAGE_HERE
 
 WORKDIR /code
 
-ADD build/libs/flibusta-bot.jar .
+ADD build/dist/flibusta-bot.jar .
 
 CMD java -jar flibusta-bot.jar
