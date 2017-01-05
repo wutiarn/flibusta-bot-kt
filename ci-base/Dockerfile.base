@@ -1,1 +1,3 @@
 FROM ubuntu:16.04
+
+RUN apt-get update && apt-get install calibre openjdk-8-jdk -y
