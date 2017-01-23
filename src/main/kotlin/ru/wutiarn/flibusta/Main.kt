@@ -2,7 +2,7 @@ package ru.wutiarn.flibusta
 
 fun main(args: Array<String>) {
     val telegramToken = getEnv("TELEGRAM_TOKEN")
-    val libPath = "/code/data"
+    val libPath = "data"
     val bot = FlibustaBot(telegramToken, libPath)
     log("Started")
     bot.run()
