@@ -2,13 +2,12 @@ package ru.wutiarn.flibusta
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.scheduling.annotation.EnableAsync
+import kotlin.concurrent.thread
 
-@EnableAsync
 @SpringBootApplication
 open class FlibustaBotApplication {
     @Autowired
-    open fun runBot(runner: FlibustaBotRunner) {
-        runner.run()
+    open fun runBot(bot: FlibustaBot) {
+        thread { bot.run() }
     }
 }
