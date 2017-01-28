@@ -56,21 +56,27 @@ class FlibustaBot(telegramToken: String, val libPath: String) {
 
         if (text.startsWith("/")) text = text.slice(1..text.lastIndex)
 
-        if (text == "clear") {
-            requestedBooks.clear()
-            bot.sendText(chatId, "Queue cleared")
-            return
-        }
 
-        if (text == "update") {
-            if (chatId != 43457173L) {
-                bot.sendText(chatId, "You don't have access to this feature")
-            } else {
-                bot.sendText(chatId, "Scan initiated. Old zips count: ${flibustaStorage.zipCount()}")
-                flibustaStorage = initStorage()
-                bot.sendText(chatId, "Scan finished. New zips count: ${flibustaStorage.zipCount()}")
+        when(text) {
+            "clear" -> {
+                requestedBooks.clear()
+                bot.sendText(chatId, "Queue cleared")
+                return
             }
-            return
+            "update" -> {
+                if (chatId != 43457173L) {
+                    bot.sendText(chatId, "You don't have access to this feature")
+                } else {
+                    bot.sendText(chatId, "Scan initiated. Old zips count: ${flibustaStorage.zipCount()}")
+                    flibustaStorage = initStorage()
+                    bot.sendText(chatId, "Scan finished. New zips count: ${flibustaStorage.zipCount()}")
+                }
+                return
+            }
+            "start" -> {
+                bot.sendText(chatId, "Hello world")
+                return
+            }
         }
 
         val entries = text.split("[ \n]".toRegex())
