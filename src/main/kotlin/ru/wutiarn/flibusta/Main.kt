@@ -1,12 +1,7 @@
 package ru.wutiarn.flibusta
 
-fun main(args: Array<String>) {
-    val telegramToken = getEnv("TELEGRAM_TOKEN")
-    val libPath = "data"
-    val bot = FlibustaBot(telegramToken, libPath)
-    log("Started")
-    bot.run()
-}
+import org.springframework.boot.SpringApplication
 
-fun getEnv(name: String): String = System.getenv(name)
-        ?: throw IllegalArgumentException("You must set $name env before start")
+fun main(args: Array<String>) {
+    SpringApplication.run(FlibustaBotApplication::class.java, *args)
+}

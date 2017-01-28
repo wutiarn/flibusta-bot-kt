@@ -1,5 +1,6 @@
 package ru.wutiarn.flibusta
 
+import org.slf4j.LoggerFactory
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.File
@@ -17,12 +18,15 @@ class FlibustaStorage(val baseDir: Path) {
             .map(::FlibustaZip)
             .toList()
 
+    private val logger = LoggerFactory.getLogger(FlibustaStorage::class.java)
+
+
     init {
-        log("Loaded ${zips.count()} zips.")
+        logger.info("Loaded ${zips.count()} zips.")
     }
 
     fun zipCount(): Int {
-        log(baseDir.toString())
+        logger.info(baseDir.toString())
         return zips.count()
     }
 

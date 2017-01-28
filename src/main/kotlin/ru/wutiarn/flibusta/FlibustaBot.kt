@@ -6,14 +6,19 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup
 import com.pengrad.telegrambot.request.GetUpdates
 import com.pengrad.telegrambot.request.SendDocument
 import okhttp3.OkHttpClient
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import java.lang.ref.WeakReference
 import java.nio.file.Paths
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class FlibustaBot(telegramToken: String, val libPath: String) {
+@Component
+open class FlibustaBot(@Value("\${TELEGRAM_TOKEN}") telegramToken: String) {
     val supportedFormats = listOf("mobi", "epub", "pdf", "fb2")
     val idRegex = ".*?(\\d{4,7}).*".toRegex()
+    val libPath: String = "data"
 
     var flibustaStorage: FlibustaStorage = initStorage()
     val httpClient = OkHttpClient().newBuilder()
@@ -21,8 +26,9 @@ class FlibustaBot(telegramToken: String, val libPath: String) {
             .build()
     val bot = TelegramBotAdapter.buildCustom(telegramToken, httpClient)
 
-    val requestedBooks = mutableMapOf<Long, WeakReference<HashSet<Int>>>()
+    private val logger = LoggerFactory.getLogger(FlibustaBot::class.java)
 
+    val requestedBooks = mutableMapOf<Long, WeakReference<HashSet<Int>>>()
 
     fun run() {
         var lastUpdateId = 0
@@ -44,7 +50,7 @@ class FlibustaBot(telegramToken: String, val libPath: String) {
         val chatId = msg.chat().id()
 
         val from = msg.from()
-        log("[${from.id()}] [Received] @${from.username()}: ${msg.text()}")
+        logger.info("[${from.id()}] [Received] @${from.username()}: ${msg.text()}")
 
         val chatRequestedBooksQueue = requestedBooks[chatId]?.get() ?: let {
             val queue = HashSet<Int>(10)
@@ -110,7 +116,7 @@ class FlibustaBot(telegramToken: String, val libPath: String) {
             flibustaStorage.getBook(id, format).subscribe({
                 bot.sendText(chatId, "$id: done. Sending.")
                 val filename = "$id.$format"
-                log("[${from.id()}] Sending $filename")
+                logger.info("[${from.id()}] Sending $filename")
                 bot.execute(SendDocument(chatId, it).fileName(filename))
             }, {
                 bot.sendText(chatId, "$id: failed. Not found or an error occurred.")

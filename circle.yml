@@ -23,7 +23,7 @@ test:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
   post:
-    - ./gradlew shadowJar
+    - ./gradlew build
     - cp build/dist/*.jar $CIRCLE_ARTIFACTS
     - (cd $CIRCLE_ARTIFACTS && sha1sum * > sha1sum.txt)
     - cat $CIRCLE_ARTIFACTS/sha1sum.txt
