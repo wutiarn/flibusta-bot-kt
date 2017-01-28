@@ -11,19 +11,18 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
 
-class FlibustaStorage(baseDir: Path) {
-    private val zips: List<FlibustaZip>
+class FlibustaStorage(val baseDir: Path) {
+    private val zips: List<FlibustaZip> = Files.newDirectoryStream(baseDir)
+            .filter { FlibustaZip.zipRegex.matches(it.fileName.toString()) }
+            .map(::FlibustaZip)
+            .toList()
 
     init {
-        zips = Files.newDirectoryStream(baseDir)
-                .filter { FlibustaZip.zipRegex.matches(it.fileName.toString()) }
-                .map { FlibustaZip(it) }
-                .toList()
-
         log("Loaded ${zips.count()} zips.")
     }
 
     fun zipCount(): Int {
+        log(baseDir.toString())
         return zips.count()
     }
 
@@ -66,14 +65,13 @@ class FlibustaZip(path: Path) {
     }
 
     val range: IntRange
-    val zipFile: ZipFile
+    val zipFile: ZipFile = ZipFile(path.toFile())
 
     init {
         val regexResult = zipRegex.find(path.toString())
         regexResult ?: throw IllegalArgumentException("$path is not supported")
         range = Integer.parseInt(regexResult.groups[1]!!.value)..Integer.parseInt(regexResult.groups[2]!!.value)
 
-        zipFile = ZipFile(path.toFile())
     }
 
     fun contains(id: Int): Boolean {

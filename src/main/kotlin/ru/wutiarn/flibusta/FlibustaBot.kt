@@ -74,7 +74,7 @@ class FlibustaBot(telegramToken: String, val libPath: String) {
         }
 
         val entries = text.split("[ \n]".toRegex())
-        val format = entries.firstOrNull() { it in supportedFormats }
+        val format = entries.firstOrNull { it in supportedFormats }
 
         val ids = entries.filter { idRegex.matches(it) }
                 .map { idRegex.find(it)!!.groups[1]!!.value }
