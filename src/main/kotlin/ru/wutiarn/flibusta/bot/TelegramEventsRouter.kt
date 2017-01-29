@@ -1,32 +1,23 @@
-package ru.wutiarn.flibusta
+package ru.wutiarn.flibusta.bot
 
-import com.pengrad.telegrambot.TelegramBotAdapter
+import com.pengrad.telegrambot.TelegramBot
 import com.pengrad.telegrambot.model.Message
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup
 import com.pengrad.telegrambot.request.GetUpdates
 import com.pengrad.telegrambot.request.SendDocument
-import okhttp3.OkHttpClient
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
+import ru.wutiarn.flibusta.FlibustaStorage
+import ru.wutiarn.flibusta.sendText
 import java.lang.ref.WeakReference
-import java.nio.file.Paths
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @Component
-open class FlibustaBot(@Value("\${TELEGRAM_TOKEN}") telegramToken: String) {
+open class TelegramEventsRouter(val bot: TelegramBot, val flibustaStorage: FlibustaStorage) {
     val supportedFormats = listOf("mobi", "epub", "pdf", "fb2")
     val idRegex = ".*?(\\d{4,7}).*".toRegex()
-    val libPath: String = "data"
 
-    var flibustaStorage: FlibustaStorage = initStorage()
-    val httpClient = OkHttpClient().newBuilder()
-            .readTimeout(65, TimeUnit.SECONDS)
-            .build()
-    val bot = TelegramBotAdapter.buildCustom(telegramToken, httpClient)
-
-    private val logger = LoggerFactory.getLogger(FlibustaBot::class.java)
+    private val logger = LoggerFactory.getLogger(TelegramEventsRouter::class.java)
 
     val requestedBooks = mutableMapOf<Long, WeakReference<HashSet<Int>>>()
 
@@ -40,10 +31,6 @@ open class FlibustaBot(@Value("\${TELEGRAM_TOKEN}") telegramToken: String) {
                 message?.text()?.let { processMessage(message) }
             }
         }
-    }
-
-    fun initStorage(): FlibustaStorage {
-        return FlibustaStorage(Paths.get(libPath))
     }
 
     fun processMessage(msg: Message) {
@@ -74,7 +61,7 @@ open class FlibustaBot(@Value("\${TELEGRAM_TOKEN}") telegramToken: String) {
                     bot.sendText(chatId, "You don't have access to this feature")
                 } else {
                     bot.sendText(chatId, "Scan initiated. Old zips count: ${flibustaStorage.zipCount()}")
-                    flibustaStorage = initStorage()
+                    flibustaStorage.rescanZips()
                     bot.sendText(chatId, "Scan finished. New zips count: ${flibustaStorage.zipCount()}")
                 }
                 return

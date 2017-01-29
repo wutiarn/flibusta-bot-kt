@@ -1,28 +1,38 @@
 package ru.wutiarn.flibusta
 
 import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 
 
-class FlibustaStorage(val baseDir: Path) {
-    private val zips: List<FlibustaZip> = Files.newDirectoryStream(baseDir)
-            .filter { FlibustaZip.zipRegex.matches(it.fileName.toString()) }
-            .map(::FlibustaZip)
-            .toList()
-
+@Component
+open class FlibustaStorage {
+    val baseDir: Path = Paths.get("data")
+    private var zips: List<FlibustaZip> = getZips()
     private val logger = LoggerFactory.getLogger(FlibustaStorage::class.java)
-
 
     init {
         logger.info("Loaded ${zips.count()} zips.")
+    }
+
+    private fun getZips(): List<FlibustaZip> {
+        return Files.newDirectoryStream(baseDir)
+                .filter { FlibustaZip.zipRegex.matches(it.fileName.toString()) }
+                .map(::FlibustaZip)
+                .toList()
+    }
+
+    fun rescanZips() {
+        zips = getZips()
     }
 
     fun zipCount(): Int {
